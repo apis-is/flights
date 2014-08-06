@@ -1,9 +1,11 @@
-var request = require('request'),
-    cheerio = require('cheerio');
+var request = require('request');
+var cheerio = require('cheerio');
+var err = require('error-helper');
 
 //@TODO Remove the icelandic version and transfer phrases into properties
 //@TODO combine plannedArrival realArrival togeather in arrival object...
-exports.kef = function(type, options, callback) {
+exports.kef = function(options, callback) {
+    var type = options.type
     var urls = {
         'is': {
             departures: 'http://www.kefairport.is/Flugaaetlun/Brottfarir/',
@@ -18,16 +20,14 @@ exports.kef = function(type, options, callback) {
     var language = options.language || 'en';
 
     if (!urls[language] || !urls[language][type]) {
-        var error = new Error('Bad combintaion of type and language');
-        error.code = 400;
-        return callback(error);
+        return callback(err(400,' Bad combintaion of type and language'));
     }
 
     request.get({
         url: urls[language][type]
     }, function(error, response, body) {
         if (error) {
-            return callback(new Error('www.kefairport.is refuses to respond or give back data'));
+            return callback(err(403,'www.kefairport.is refuses to respond or give back data'));
         }
 
         var $ = cheerio.load(body),
