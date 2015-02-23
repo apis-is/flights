@@ -1,57 +1,40 @@
-var request = require('request');
-var cheerio = require('cheerio');
-var err = require('error-helper');
+var _ = require('lodash');
+var xray = require('x-ray');
 
-//@TODO Remove the icelandic version and transfer phrases into properties
-//@TODO combine plannedArrival realArrival togeather in arrival object...
-exports.kef = function(options, callback) {
-    var type = options.type
-    var urls = {
-        'is': {
-            departures: 'http://www.kefairport.is/Flugaaetlun/Brottfarir/',
-            arrivals: 'http://www.kefairport.is/Flugaaetlun/Komur/'
-        },
-        'en': {
-            departures: 'http://www.kefairport.is/English/Timetables/Departures/',
-            arrivals: 'http://www.kefairport.is/English/Timetables/Arrivals/'
+exports.kef = function(query, cb) {
+  var langs = ['en','is'];
+  if (langs.indexOf(query.lang) < 0) {
+    query.lang = langs[0];
+  }
+  var url = 'http://www.kefairport.is/';
+  url += query.lang === 'is' ? '/Flugaaetlun' : '/English/Timetables';
+  if (query.type === 'departures') {
+    url += query.lang === 'is' ? '/Brottfarir/' : '/Departures/';
+  } else {
+    url += query.lang === 'is' ? '/Komur/' : '/Arrivals/';
+  }
+
+  xray(url)
+    .select([{
+      $root: 'table tr',
+      date: 'td:nth-child(1)',
+      flightNumber: 'td:nth-child(2)',
+      airline: 'td:nth-child(3)',
+      to: 'td:nth-child(4)',
+      from: 'td:nth-child(4)',
+      scheduledTime: 'td:nth-child(5)',
+      estimatedTime: 'td:nth-child(6)',
+      status: 'td:nth-child(7)'
+    }])
+    .run(function(err, array) {
+      var cleaned = _.map(array, function(flights) {
+        if (query.type === 'departures') {
+          delete flights.from;
+        } else {
+          delete flights.to;
         }
-    }
-
-    var language = options.language || 'en';
-
-    if (!urls[language] || !urls[language][type]) {
-        return callback(err(400,' Bad combintaion of type and language'));
-    }
-
-    request.get({
-        url: urls[language][type]
-    }, function(error, response, body) {
-        if (error) {
-            return callback(err(403,'www.kefairport.is refuses to respond or give back data'));
-        }
-
-        var $ = cheerio.load(body),
-            obj = {
-                results: []
-            };
-
-        var fields = ['date', 'flightNumber', 'airline', 'to', 'from', 'plannedArrival', 'realArrival', 'status'];
-
-        $('table tr').each(function(key) {
-            if (key !== 0) {
-                var flight = {};
-
-                $(this).find('td').each(function(key) {
-                    var val = $(this).html();
-                    if (val != '' && val != 0) { // Perform check and add to flight array if it passes
-                        flight[fields[key]] = val;
-
-                    }
-                });
-                obj.results.push(flight);
-            }
-        });
-
-        return callback(null, obj);
+       return flights;
+      });
+      return cb(err, cleaned);
     });
 };
