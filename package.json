@@ -1,14 +1,12 @@
 {
   "name": "flights",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": {
     "name": "Kristján Ingi Mikaelsson",
     "email": "kristjanmik@gmail.com"
   },
   "contributors": [
-    "Benedikt D Valdez <benedikt@kolibri.is>",
-    "@arnorhs",
-    "@gsmari"
+    "Benedikt D Valdez <benedikt@kolibri.is>"
   ],
   "description": "A Node.js library to look up flights schedules",
   "repository": {
