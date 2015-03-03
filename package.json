@@ -1,18 +1,22 @@
 {
-    "name": "flights",
-    "version": "0.1.1",
-    "author": {
-        "name": "Kristján Ingi Mikaelsson",
-        "email": "kristjanmik@gmail.com"
-    },
-    "description": "An Node.js library to look up flights schedules",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/kristjanmik/flights.git"
-    },
-    "dependencies": {
-        "request": "~2.30.0",
-        "cheerio": "~0.13.0",
-        "error-helper": "*"
-    }
+  "name": "flights",
+  "version": "0.1.1",
+  "author": {
+    "name": "Kristján Ingi Mikaelsson",
+    "email": "kristjanmik@gmail.com"
+  },
+  "contributors": [
+    "Benedikt D Valdez <benedikt@kolibri.is>",
+    "@arnorhs",
+    "@gsmari"
+  ],
+  "description": "A Node.js library to look up flights schedules",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kristjanmik/flights.git"
+  },
+  "dependencies": {
+    "lodash": "^3.3.0",
+    "x-ray": "^1.0.3"
+  }
 }
