@@ -15,6 +15,9 @@
   },
   "dependencies": {
     "lodash": "^3.3.0",
-    "x-ray": "^1.0.3"
+    "x-ray": "^1.0.3",
+    "bluebird": "~2.9.27",
+    "mocha": "~1.21.5",
+    "mocha-as-promised": "~2.0.0"
   }
 }
