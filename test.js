@@ -1,5 +1,3 @@
-require("mocha-as-promised")();
-
 var flights = require('./');
 
 describe('Flights',function(){
