@@ -37,7 +37,7 @@ var flights = {
           }
          return flights;
         }).filter(function(item){
-          return Object.keys(item) > 0;
+          return Object.keys(item).length > 0;
         });
         return cb(err, cleaned);
       });
